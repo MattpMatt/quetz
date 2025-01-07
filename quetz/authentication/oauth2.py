@@ -3,7 +3,7 @@
 
 import json
 from typing import Optional
-
+import logging
 from authlib.integrations.starlette_client import OAuth
 from fastapi import Request
 from starlette.responses import RedirectResponse
@@ -35,6 +35,7 @@ class OAuthHandlers(BaseAuthenticationHandlers):
             self.authenticator.revoke_url.format(client_id=client_id)
         )
 
+logger = logging.getLogger("quetz")
 
 class OAuthAuthenticator(BaseAuthenticator):
     """Base class for authenticators using Oauth2 protocol and its variants.
@@ -95,6 +96,7 @@ class OAuthAuthenticator(BaseAuthenticator):
         raise NotImplementedError("subclasses need to implement userinfo")
 
     async def authenticate(self, request, data=None, dao=None, config=None):
+      try:
         token = await self.client.authorize_access_token(request)
 
         profile = await self.userinfo(request, token)
@@ -103,6 +105,9 @@ class OAuthAuthenticator(BaseAuthenticator):
         auth_state = {"token": json.dumps(token), "provider": self.provider}
 
         return {"username": username, "profile": profile, "auth_state": auth_state}
+      except Exception as e:
+        logger.warning(f"{e}")
+        return None
 
     def register(self, client_kwargs=None):
         if client_kwargs is None:

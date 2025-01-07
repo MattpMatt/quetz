@@ -2,6 +2,8 @@
 # Register the app here: https://github.com/settings/applications/new
 client_id = "{}"
 client_secret = "{}"
+# filter_by_orgs="{}"
+# orgs="{}"
 
 [sqlalchemy]
 database_url = "{}"

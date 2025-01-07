@@ -1,5 +1,6 @@
 from .oauth2 import OAuthAuthenticator
-
+from quetz.config import Config
+import httpx
 
 class GithubAuthenticator(OAuthAuthenticator):
     """Use Github account to authenticate users with Quetz.
@@ -19,12 +20,14 @@ class GithubAuthenticator(OAuthAuthenticator):
 
     provider = "github"
     collect_emails = False
+    collect_orgs = False
+    orgs = []
 
     # oauth client params
     access_token_url = "https://github.com/login/oauth/access_token"
     authorize_url = "https://github.com/login/oauth/authorize"
     api_base_url = "https://api.github.com/"
-    scope = "user:email"
+    scope = ""
 
     # endpoint urls
     validate_token_url = "user"
@@ -37,7 +40,17 @@ class GithubAuthenticator(OAuthAuthenticator):
         if self.collect_emails:
             emails = await self.client.get("user/emails", token=token)
             profile["emails"] = emails.json()
+        
+        if self.collect_orgs:
+          orgs = await self.client.get("user/orgs", token=token)
+          org_resp_json = orgs.json()
+          org_names = [org['login'] for org in org_resp_json]
+          profile["orgs"] = orgs.json()
 
+          for name in self.orgs:
+            if name not in org_names:
+              raise Exception("Auth Failed")
+            
         return profile
 
     def configure(self, config):
@@ -45,8 +58,19 @@ class GithubAuthenticator(OAuthAuthenticator):
             self.client_id = config.github_client_id
             self.client_secret = config.github_client_secret
             self.is_enabled = True
+
+            self.collect_orgs = config.github_collect_orgs
+            self.orgs = config.github_orgs
             if config.configured_section("users"):
                 self.collect_emails = config.users_collect_emails
+
+            scope = ""
+            if self.collect_orgs:
+              scope += "read:org"
+            if self.collect_emails:
+              scope += " user:email"
+
+            self.scope = scope
 
         else:
             self.is_enabled = False

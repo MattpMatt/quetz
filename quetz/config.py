@@ -79,6 +79,8 @@ class Config:
             [
                 ConfigEntry("client_id", str),
                 ConfigEntry("client_secret", str),
+                ConfigEntry("collect_orgs", bool, False),
+                ConfigEntry("orgs", list, []),
             ],
             required=False,
         ),
