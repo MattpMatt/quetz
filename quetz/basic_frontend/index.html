@@ -49,38 +49,19 @@
   </head>
   <body>
     <h1>Quetz</h1>
-    <a href="/auth/github/login" style="margin-right: 100px" id="github_login"
+    <a href="/quetz/auth/github/login" style="margin-right: 100px" id="github_login"
       >login with github</a
     >
-    <a href="/auth/gitlab/login" style="margin-right: 100px" id="gitlab_login"
-      >login with gitlab</a
-    >
-    <a href="/auth/google/login" style="margin-right: 100px" id="google_login"
-      >login with google</a
-    >
-    <a href="/auth/azuread/login" style="margin-right: 100px" id="azuread_login"
-      >login with AzureAD</a
-    >
-    <a href="/auth/github/revoke" style="margin-right: 100px" id="revoke"
+    <a href="/quetz/auth/github/revoke" style="margin-right: 100px" id="revoke"
       >revoke github</a
     >
-    <a href="/auth/gitlab/revoke" style="margin-right: 100px" id="revoke"
-      >revoke gitlab</a
-    >
-    <a href="/auth/google/revoke" style="margin-right: 100px" id="revoke"
-      >revoke google</a
-    >
-    <a href="/auth/azuread/revoke" style="margin-right: 100px" id="revoke"
-      >revoke AzureAD</a
-    >
-
     <div class="modal">
       <div class="modal-content">
         <span class="close-button">&times;</span>
         <div id="modalmsg">Hello, I am a modal!</div>
       </div>
     </div>
-    <a href="/auth/logout" id="logout">logout</a>
+    <a href="/quetz/auth/logout" id="logout">logout</a>
     <div id="status"></div>
 
     <script>
@@ -107,7 +88,7 @@
       window.addEventListener("click", windowOnClick);
 
       function getApiKey() {
-        fetch("/api/api-keys", {
+        fetch("/quetz/api/api-keys", {
           method: "POST",
           body: JSON.stringify({ description: "default key", roles: [] }),
           headers: {
@@ -125,7 +106,7 @@
       }
 
       function getProfile() {
-        fetch("/api/me")
+        fetch("/quetz/api/me")
           .then((response) => {
             if (response.status === 200) {
               return response.json();

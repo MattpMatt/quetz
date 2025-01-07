@@ -96,7 +96,7 @@ from quetz.utils import (
 
 from .condainfo import CondaInfo
 
-app = FastAPI()
+app = FastAPI(root_path="/quetz/")
 
 config = Config()
 

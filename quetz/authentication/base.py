@@ -138,7 +138,7 @@ class BaseAuthenticationHandlers:
         request.session.update(user_data.get("auth_state", {}))
 
         # use 303 code so that the method is always changed to GET
-        resp = RedirectResponse("/", status_code=303)
+        resp = RedirectResponse("/quetz/", status_code=303)
 
         return resp
 
